@@ -2,13 +2,13 @@
 
 require_once '../loader.php';
 
-TellMuch::init()
+TellMuch::create()
 	->setLocales(array('en', 'ru'))
-	->setTargetLocale('ru')
+	->setTargetLocale('en')
 	->setOriginLocale('ru')
 	->setEngine('yandex');
 	
 header('Content-Type: text/html; charset=utf-8');
 
-txt('Первые попытки создания кодов с избыточной информацией начались задолго до появления современных ПК.');
+txt('Первые попытки создания кодов с избыточной информацией начались задолго до появления современных ПК');
 
