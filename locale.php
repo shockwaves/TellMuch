@@ -2,48 +2,53 @@
 
 class Locale {
 
-    public static $target;
-    public static $origin;
+    public static $to;
+    public static $from;
     public static $range;
-    public static $sessionTargetName = 'locale';
+    public static $sessionToName = 'locale';
+
+    protected static function getSettings() {
+        global $config;
+        return (object) $config['locale'];
+    }
 
     public static function init() {
-        global $config;
-        $settings = $config['locale'];
-        if(!self::$target) {
-            self::setTarget($settings['target']);
+        $config = self::getSettings();
+        if (!self::$to) {
+            self::setTo($config->to);
         }
-        if(!self::$origin) {
-            self::setOrigin($settings['origin']);
+        if (!self::$from) {
+            self::setFrom($config->from);
         }
-        if(!self::$range) {
-            self::setRange($settings['range']);
+        if (!self::$range) {
+            self::setRange($config->range);
         }
-        
-//        if ($settings['saveTargetInSession']) {
+
+//        if ($config->saveToInSession) {
 //            session_start();
-//            if (!isset($_SESSION[self::$sessionTargetName])) {
-//                $_SESSION[self::$sessionTargetName] = self::$target;
+//            $name = self::$sessionTargetName;
+//            if (!isset($_SESSION[$name])) {
+//                $_SESSION[$name] = self::$to;
 //            }
-//            $target = $_SESSION[self::$sessionTargetName];
-//            self::setTarget($target);
+//            $locale = $_SESSION[$name];
+//            self::setTo($locale);
 //        }
     }
 
-    public static function setTarget($locale = '') {
-        self::$target = $locale;
+    public static function setTo($locale = '') {
+        self::$to = $locale;
     }
 
-    public static function setOrigin($locale = '') {
-        self::$origin = $locale;
+    public static function setFrom($locale = '') {
+        self::$from = $locale;
     }
 
     public static function setRange($range = '') {
         self::$range = $range;
     }
-    
-    public function getTarget() {
-        return self::$target;
+
+    public static function getTo() {
+        return self::$to;
     }
 
 }

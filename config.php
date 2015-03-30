@@ -3,8 +3,8 @@
 $config = array(
     'mode' => 'auto',
     'locale' => array(
-        'origin' => 'ru',
-        'target' => 'ru',
+        'from' => 'ru',
+        'to' => 'ru',
 //        'saveTargetInSession' => true,
         'range' => array(
             'ru',
