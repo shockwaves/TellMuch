@@ -20,9 +20,7 @@ function txt($text = '') {
                 ->setTo(Locale::$to)
                 ->run();
         
-        $store = FileStore::getAll();      
-        $store[$hash] = $result;
-        FileStore::rewrite($store);      
+        FileStore::update($hash, $result);      
     }
 
     echo $result;

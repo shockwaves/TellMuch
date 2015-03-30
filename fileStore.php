@@ -35,29 +35,36 @@ class FileStore {
         fclose($file);
     }
 
+    public static function update($hash, $text) {
+        $store = self::getAll();
+        $store[$hash] = $text;
+        self::rewrite($store);
+    }
+
     public static function rewrite($data = array()) {
         $array = sprintf('$%s = %s', self::$storeVarName, var_export($data, true));
         $str = "<?php\n" . $array . ";\n";
         return file_put_contents(self::$toPath, $str);
     }
-    
+
     public static function getFrom($text) {
         global ${self::$storeVarName};
         $hash = self::getHashByText($text);
         return isset($data[$hash]) ? $data[$hash] : FALSE;
     }
-    
+
     public static function getTextByHash($hash) {
         global ${self::$storeVarName};
         return isset($data[$hash]) ? $data[$hash] : FALSE;
     }
-    
+
     public static function getAll() {
         global ${self::$storeVarName};
         return ${self::$storeVarName};
     }
-    
+
     public static function getHashByText($text = '') {
         return crc32($text);
     }
+
 }
