@@ -15,8 +15,7 @@ function txt($text = '') {
     if (!$result) {
         $result = Engine::setup()
                 ->setText($text)
-                ->run();
-        
+                ->run();     
         Store::update($hash, $result);      
     }
     echo $result;
