@@ -8,6 +8,7 @@ class Engine {
     public static $to;
     public static $from;
     public static $text;
+    protected static $requestUrl;
 //    engines config
     protected $url;
     protected $options;
@@ -28,10 +29,10 @@ class Engine {
     }
 
     public static function mount($name = '') {
-        if(ucwords($name) == get_class(self::$current)) {
+        if (ucwords($name) == get_class(self::$current)) {
             return self::$current;
         }
-        
+
         require_once sprintf('engines/%s.php', $name);
         $engine = new $name;
         $config = self::getSettings($name);
@@ -59,7 +60,10 @@ class Engine {
     }
 
     public function run() {
-        return $this->run();
+        $this->init();
+        $this->prepareUrl();
+        $result = self::sendRequest();
+        return $this->getText($result);
     }
 
     protected function setUrl($url = '') {
@@ -73,35 +77,22 @@ class Engine {
     }
 
     protected function setParams($params = array()) {
-        $this->params = $params;
+        $this->params = array_flip($params);
         return $this;
     }
 
-    public function send_through_curl($url = '', $params = FALSE, $secure = FALSE) {
-        $curl = curl_init();
-        // склеиваем урл если это массив
-        if (is_array($url)) {
-            $url = implode($url);
-        }
+    protected function prepareUrl() {
+        $data = $this->options + $this->params;
+        $uri = http_build_query($data);
+        $url = $this->url.$uri;
+        self::$requestUrl = $url;
+    }
 
-        // уcтанавливаем проверку SSL если secure=true
-        if (!$secure) {
-            curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
-        }
-        // уcтанавливаем заголовки если такие нужны
-        if (isset($params['headers'])) {
-            curl_setopt($curl, CURLOPT_HTTPHEADER, $params['headers']);
-        }
-        // передаем данные по методу post    
-        if (isset($params['post'])) {
-            curl_setopt($curl, CURLOPT_POST, TRUE);
-            curl_setopt($curl, CURLOPT_POSTFIELDS, $params['post']);
-        }
-        // уcтанавливаем урл, к которому обратимся
-        curl_setopt($curl, CURLOPT_URL, $url);
-        // максимальное время выполнения скрипта
+    public function sendRequest() {
+        $curl = curl_init();
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($curl, CURLOPT_URL, self::$requestUrl);
         curl_setopt($curl, CURLOPT_TIMEOUT, 20);
-        // теперь curl вернет нам ответ, а не выведет
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
         $result = curl_exec($curl);
         curl_close($curl);

@@ -1,11 +1,10 @@
 <?php
 
 $config = array(
-    'mode' => 'auto',
+    'enableTranslate' => true,
     'locale' => array(
         'from' => 'ru',
         'to' => 'ru',
-//        'saveTargetInSession' => true,
         'range' => array(
             'ru',
             'en'
