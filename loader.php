@@ -1,26 +1,25 @@
 <?php
 
-require_once 'config.php';
-require_once 'locale.php';
-require_once 'fileStore.php';
-require_once 'engine.php';
-require_once 'app.php';
+require_once 'core/config.php';
+require_once 'core/app.php';
+require_once 'core/locale.php';
+require_once 'core/store.php';
+require_once 'core/engine.php';
+
 App::setup();
 
 function txt($text = '') {
     App::load();
-    $hash = FileStore::getHashByText($text);
-    $result = FileStore::getTextByHash($hash);
+    
+    $hash = Store::getHashByText($text);
+    $result = Store::getTextByHash($hash);
 
     if (!$result) {
         $result = Engine::setup()
-                ->mount('yandex')
                 ->setText($text)
-                ->setFrom(Locale::$from)
-                ->setTo(Locale::$to)
                 ->run();
         
-        FileStore::update($hash, $result);      
+        Store::update($hash, $result);      
     }
 
     echo $result;

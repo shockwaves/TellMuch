@@ -1,14 +1,9 @@
 <?php
 
 $config = array(
-    'enableTranslate' => true,
     'locale' => array(
         'from' => 'ru',
         'to' => 'ru',
-        'range' => array(
-            'ru',
-            'en'
-        ),
     ),
     'engine' => array(
         'yandex' => array(
@@ -24,7 +19,7 @@ $config = array(
             )
         ),
         'google' => array(
-            'enable' => true,
+            'enable' => false,
             'url' => 'http://translate.google.ru/translate_a/t?',
             'options' => array(
                 'format' => 'html',

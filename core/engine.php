@@ -1,23 +1,31 @@
 <?php
 
-class Engine {
+class Engine extends App {
 
     private static $current;
     private static $settings;
-//    common
-    public static $to;
-    public static $from;
-    public static $text;
     protected static $requestUrl;
-//    engines config
-    protected $url;
-    protected $options;
-    protected $params;
+    public static $path = 'engines';
+    protected $url = '';
+    protected $options = array();
+    protected $params = array();
 
     protected static function getSettings($item = '') {
         global $config;
         self::$settings = $config['engine'];
         return ($item) ? (object) self::$settings[$item] : self::$settings;
+    }
+
+    public static function load() {
+        return self::$current;
+    }
+
+    public function init() {
+        return self::$current;
+    }
+
+    public function create($name) {
+        return new $name;
     }
 
     public static function setup() {
@@ -26,6 +34,9 @@ class Engine {
                 return self::mount($name);
             }
         }
+
+        self::$current = new self;
+        return self::$current;
     }
 
     public static function mount($name = '') {
@@ -33,35 +44,23 @@ class Engine {
             return self::$current;
         }
 
-        require_once sprintf('engines/%s.php', $name);
-        $engine = new $name;
+        require_once sprintf('%s/%s/%s.php',$_SERVER['DOCUMENT_ROOT'], self::$path, $name);
         $config = self::getSettings($name);
-        $engine->setUrl($config->url)
+        $engine = self::create($name)
+                ->setUrl($config->url)
                 ->setOptions($config->options)
                 ->setParams($config->params);
         self::$current = $engine;
-        self::setTo(Locale::$to);
         return self::$current;
     }
 
-    public function setText($text = '') {
-        self::$text = $text;
-        return self::$current;
-    }
-
-    public function setTo($locale = '') {
-        self::$to = $locale;
-        return self::$current;
-    }
-
-    public function setFrom($locale = '') {
-        self::$from = $locale;
-        return self::$current;
+    public function getText() {
+        return self::$text;
     }
 
     public function run() {
         $this->init();
-        $this->prepareUrl();
+        $this->prepareRequestUrl();
         $result = self::sendRequest();
         return $this->getText($result);
     }
@@ -81,10 +80,10 @@ class Engine {
         return $this;
     }
 
-    protected function prepareUrl() {
+    protected function prepareRequestUrl() {
         $data = $this->options + $this->params;
         $uri = http_build_query($data);
-        $url = $this->url.$uri;
+        $url = $this->url . $uri;
         self::$requestUrl = $url;
     }
 

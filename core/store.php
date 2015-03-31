@@ -1,6 +1,6 @@
 <?php
 
-class FileStore {
+class Store extends App {
 
     public static $path = 'langs';
     public static $storeVarName = 'data';
@@ -12,7 +12,7 @@ class FileStore {
     }
 
     private static function setToPath() {
-        $path = sprintf('%s/%s/%s.php', __DIR__, self::$path, Locale::$to);
+        $path = sprintf('%s/%s/%s.php', $_SERVER['DOCUMENT_ROOT'], self::$path, self::$to);
         self::$toPath = $path;
     }
 
@@ -33,6 +33,7 @@ class FileStore {
                 or die('Cannot create file: ' . self::$toPath);
         self::rewrite();
         fclose($file);
+        chmod(self::$toPath, 0777); 
     }
 
     public static function update($hash, $text) {

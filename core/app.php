@@ -4,9 +4,9 @@ class App {
 
     private static $instance;
     public $isLoad;
-    public $text;
-    public $context;
-    public $engine;
+    public static $text;
+    public static $from;
+    public static $to;
 
     public static function setup() {
         if (!self::$instance) {
@@ -16,48 +16,37 @@ class App {
     }
 
     public static function load() {
-        if(self::$instance->isLoad) {
+        if (self::$instance->isLoad) {
             return FALSE;
         }
-        
+
         Locale::init();
-        FileStore::init();
+        Store::init();
         self::$instance->isLoad = true;
     }
 
-    public function setLocales($range = array()) {
-        Locale::setRange($range);
-        return $this;
-    }
-
     public function setTo($locale = '') {
-        Locale::setTo($locale);
+        self::$to = $locale;
         return $this;
     }
 
     public function setFrom($locale = '') {
-        Locale::setFrom($locale);
-        return $this;
-    }
-
-    public function setEngine($engine = '') {
-        $this->engine = $engine;
+        self::$from = $locale;
         return $this;
     }
 
     public function setText($text = '') {
-        $this->text = $text;
+        self::$text = $text;
         return $this;
     }
 
-    public function setContext($context = '') {
-        $this->context = $context;
+    public function setEngine($name = '') {
+        Engine::mount($name);
         return $this;
     }
 
     public function run() {
-        return;
+        return Engine::load()->run();
     }
 
 }
-
