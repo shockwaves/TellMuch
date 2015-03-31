@@ -43,7 +43,6 @@ class Engine extends App {
         if (ucwords($name) == get_class(self::$current)) {
             return self::$current;
         }
-
         require_once sprintf('%s/%s/%s.php',$_SERVER['DOCUMENT_ROOT'], self::$path, $name);
         $config = self::getSettings($name);
         $engine = self::create($name)

@@ -19,7 +19,6 @@ class App {
         if (self::$instance->isLoad) {
             return FALSE;
         }
-
         Locale::init();
         Store::init();
         self::$instance->isLoad = true;

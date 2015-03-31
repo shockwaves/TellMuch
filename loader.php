@@ -9,11 +9,9 @@ require_once 'core/engine.php';
 App::setup();
 
 function txt($text = '') {
-    App::load();
-    
+    App::load();    
     $hash = Store::getHashByText($text);
     $result = Store::getTextByHash($hash);
-
     if (!$result) {
         $result = Engine::setup()
                 ->setText($text)
@@ -21,6 +19,5 @@ function txt($text = '') {
         
         Store::update($hash, $result);      
     }
-
     echo $result;
 }
