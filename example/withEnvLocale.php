@@ -1,9 +1,11 @@
 <?php
+session_start();
+$_SESSION['localeEnv'] = 'pl';
 
 require_once '../loader.php';
 
 App::setup()
-        ->setTo('uk')
+        ->envLocaleKey('localeEnv')
         ->setFrom('ru');
 
 header('Content-Type: text/html; charset=utf-8');

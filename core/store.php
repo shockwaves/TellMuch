@@ -42,6 +42,11 @@ class Store extends App {
         self::rewrite($store);
     }
 
+    public static function updateByOrigin($origin, $text) {
+        $hash = self::getHashByText($origin);
+        self::update($hash, $text);
+    }
+
     public static function rewrite($data = array()) {
         $array = sprintf('$%s = %s', self::$storeVarName, var_export($data, true));
         $str = "<?php\n" . $array . ";\n";
@@ -67,5 +72,4 @@ class Store extends App {
     public static function getHashByText($text = '') {
         return crc32($text);
     }
-
 }

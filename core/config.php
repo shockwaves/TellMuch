@@ -1,9 +1,13 @@
 <?php
 
 $config = array(
+    'app' => array(
+        'enableForceTranslate' => false,
+    ),  
     'locale' => array(
-        'from' => 'ru',
-        'to' => 'ru',
+        'from' => 'ru',             /* origin locale */
+        'to' => 'en',               /* target locale */
+        'envLocaleKey' => 'pl'    /* use target locale from session or cookie */
     ),
     'engine' => array(
         'yandex' => array(

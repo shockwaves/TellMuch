@@ -2,11 +2,22 @@
 
 class App {
 
+    
     private static $instance;
+    private static $settings;
     public $isLoad;
     public static $text;
     public static $from;
     public static $to;
+
+    protected static function loadSettings() {
+        global $config;
+        self::$settings = (object) $config['app'];
+    }
+
+    protected static function getSettings($item = '') {
+        return ($item) ? (object) self::$settings->$item : (object) self::$settings;
+    }
 
     public static function setup() {
         if (!self::$instance) {
@@ -17,11 +28,19 @@ class App {
 
     public static function load() {
         if (self::$instance->isLoad) {
-            return FALSE;
+            return self::$instance;
         }
+        self::loadSettings();
         Locale::init();
         Store::init();
         self::$instance->isLoad = true;
+        return self::$instance;
+    }
+
+    public function envLocaleKey($name = '') {
+        $locale = Locale::getEnvLocaleByKey($name);
+        self::$to = $locale;
+        return $this;
     }
 
     public function setTo($locale = '') {
@@ -46,6 +65,14 @@ class App {
 
     public function run() {
         return Engine::load()->run();
+    }
+
+    public function getResult($text = '') {
+        if(TRUE === self::getSettings('enableForceTranslate')) {
+            return FALSE;
+        }
+        $hash = Store::getHashByText($text);
+        return Store::getTextByHash($hash);
     }
 
 }

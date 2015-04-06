@@ -8,15 +8,13 @@ require_once 'core/engine.php';
 
 App::setup();
 
-function txt($text = '') {
-    App::load();    
-    $hash = Store::getHashByText($text);
-    $result = Store::getTextByHash($hash);
+function txt($text = '') { 
+    $result = App::load()->getResult($text);
     if (!$result) {
         $result = Engine::setup()
                 ->setText($text)
                 ->run();     
-        Store::update($hash, $result);      
+        Store::updateByOrigin($text, $result);      
     }
     echo $result;
 }

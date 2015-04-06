@@ -12,8 +12,8 @@ class Engine extends App {
 
     protected static function getSettings($item = '') {
         global $config;
-        self::$settings = $config['engine'];
-        return ($item) ? (object) self::$settings[$item] : self::$settings;
+        self::$settings = (object) $config['engine'];
+        return ($item) ? (object) self::$settings->$item : (object) self::$settings;
     }
 
     public static function load() {
@@ -29,7 +29,7 @@ class Engine extends App {
     }
 
     public static function setup() {
-        foreach (self::getSettings() as $name => $settings) {
+        foreach (self::getSettings() as $name => $settings) {         
             if ($settings['enable']) {
                 return self::mount($name);
             }
