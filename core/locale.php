@@ -3,24 +3,24 @@
 class Locale extends App {
 
     private static $settings;
-    
+
     protected static function getSettings($item = '') {
-        global $config;
-        self::$settings = (object) $config['locale'];
-        return ($item) ? self::$settings[$item] : self::$settings;
+        global $_config;
+        self::$settings = (object) $_config['locale'];
+        return ($item) ? self::$settings->{$item} : self::$settings;
     }
 
     public static function init() {
         $config = self::getSettings();
-        if (!self::$to) {
-            if (isset($config->envLocaleKey)) {
-                self::$to = $config->envLocaleKey;
+        if (!parent::$to) {
+            if (isset($config->envLocaleKey)) {             
+                self::$to = self::getEnvLocaleByKey($config->envLocaleKey);
             } else {
                 self::$to = $config->to;
             }
         }
-        if (!self::$from) {
-            self::$from = $config->from;
+        if (!parent::$from) {
+            parent::$from = $config->from;
         }
     }
 

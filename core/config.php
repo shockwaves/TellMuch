@@ -1,13 +1,13 @@
 <?php
-
-$config = array(
+global $_config;
+$_config = array(
     'app' => array(
         'enableForceTranslate' => false,
     ),  
     'locale' => array(
-        'from' => 'ru',             /* origin locale */
+        'from' => 'en',             /* origin locale */
         'to' => 'en',               /* target locale */
-        'envLocaleKey' => 'pl'    /* use target locale from session or cookie */
+        'envLocaleKey' => 'cookie_language'    /* use target locale from session or cookie */
     ),
     'engine' => array(
         'yandex' => array(
@@ -20,6 +20,10 @@ $config = array(
             'params' => array(
                 'text',
                 'lang'
+            ),
+            'map' => array(
+                'cn' => 'zh',
+                'ae' => 'ar',
             )
         ),
         'google' => array(

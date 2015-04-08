@@ -2,7 +2,6 @@
 
 class App {
 
-    
     private static $instance;
     private static $settings;
     public $isLoad;
@@ -11,13 +10,17 @@ class App {
     public static $to;
 
     protected static function loadSettings() {
-        global $config;
-        self::$settings = (object) $config['app'];
+        global $_config;
+        self::$settings = (object) $_config['app'];
     }
 
     protected static function getSettings($item = '') {
         return ($item) ? (object) self::$settings->$item : (object) self::$settings;
     }
+
+//    public static function init() {
+//        return self::setup();
+//    }
 
     public static function setup() {
         if (!self::$instance) {
@@ -30,6 +33,7 @@ class App {
         if (self::$instance->isLoad) {
             return self::$instance;
         }
+
         self::loadSettings();
         Locale::init();
         Store::init();
@@ -68,7 +72,7 @@ class App {
     }
 
     public function getResult($text = '') {
-        if(TRUE === self::getSettings('enableForceTranslate')) {
+        if (TRUE === self::getSettings('enableForceTranslate')) {
             return FALSE;
         }
         $hash = Store::getHashByText($text);

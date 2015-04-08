@@ -16,5 +16,5 @@ function txt($text = '') {
                 ->run();     
         Store::updateByOrigin($text, $result);      
     }
-    echo $result;
+    return $result;
 }

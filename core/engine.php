@@ -9,10 +9,14 @@ class Engine extends App {
     protected $url = '';
     protected $options = array();
     protected $params = array();
+//    additional
+    protected $map;
+    public static $origin;
+    public static $target;
 
     protected static function getSettings($item = '') {
-        global $config;
-        self::$settings = (object) $config['engine'];
+        global $_config;
+        self::$settings = (object) $_config['engine'];
         return ($item) ? (object) self::$settings->$item : (object) self::$settings;
     }
 
@@ -24,12 +28,13 @@ class Engine extends App {
         return self::$current;
     }
 
-    public function create($name) {
+    public static function create($name) {
+        require_once sprintf('%s/%s/%s.php', dirname(__FILE__) . '/..', self::$path, $name);
         return new $name;
     }
 
     public static function setup() {
-        foreach (self::getSettings() as $name => $settings) {         
+        foreach (self::getSettings() as $name => $settings) {
             if ($settings['enable']) {
                 return self::mount($name);
             }
@@ -43,29 +48,52 @@ class Engine extends App {
         if (ucwords($name) == get_class(self::$current)) {
             return self::$current;
         }
-        require_once sprintf('%s/%s/%s.php',$_SERVER['DOCUMENT_ROOT'], self::$path, $name);
+              
         $config = self::getSettings($name);
         $engine = self::create($name)
                 ->setUrl($config->url)
                 ->setOptions($config->options)
                 ->setParams($config->params);
+        
+        if(isset($config->map)) {
+            $engine->setMap($config->map);
+        }
+        
         self::$current = $engine;
         return self::$current;
     }
 
-    public function getText() {
+    public function getText($response = '') {
         return self::$text;
     }
 
     public function run() {
+        $this->setDirections();
         $this->init();
+//        $this->hasMapDecode();
         $this->prepareRequestUrl();
         $result = self::sendRequest();
         return $this->getText($result);
     }
+    
+    public function setDirections() {     
+        self::$origin = self::$from;  
+        self::$target = self::$to;
+        if($this->map) {
+            if(isset($this->map[self::$to])) {
+                self::$target = $this->map[self::$to];
+            }
+        }
+        
+    }
 
     protected function setUrl($url = '') {
         $this->url = $url;
+        return $this;
+    }
+
+    protected function setMap($map = '') {
+        $this->map = $map;
         return $this;
     }
 

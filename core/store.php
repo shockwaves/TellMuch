@@ -12,7 +12,8 @@ class Store extends App {
     }
 
     private static function setToPath() {
-        $path = sprintf('%s/%s/%s.php', $_SERVER['DOCUMENT_ROOT'], self::$path, self::$to);
+        $path = sprintf('%s/%s/%s.php', dirname(__FILE__).'/..', self::$path, self::$to);
+                error_log($path);
         self::$toPath = $path;
     }
 
